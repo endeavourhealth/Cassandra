@@ -9,8 +9,11 @@ import org.endeavourhealth.common.cache.ObjectMapperPool;
 import org.endeavourhealth.common.cassandra.ehr.EnumRegistry;
 import org.endeavourhealth.common.cassandra.models.Cassandra;
 import org.endeavourhealth.common.config.ConfigManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CassandraConnector {
+    private static final Logger LOG = LoggerFactory.getLogger(CassandraConnector.class);
     private static CassandraConnector instance = null;
 
     private final Cluster cluster;
@@ -61,19 +64,29 @@ public class CassandraConnector {
     }
 
     public static CassandraConnector getInstance() {
-        if (instance == null)
+        if (instance == null) {
+            LOG.trace("Creating cassandra connector");
             instance = new CassandraConnector();
+        }
 
         return instance;
     }
 
-    public void close() {
-        //clear cached statements
-        statementCache.clear();
+    public static void close() {
+        CassandraConnector temp = instance;
+        if (instance != null) {
 
-        session.close();
+            instance = null;
+            LOG.trace("Clearing statement cache...");
+            temp.statementCache.clear();
 
-        //close cluster
-        cluster.close();
+            LOG.trace("Closing sessions...");
+            temp.session.close();
+
+            LOG.trace("Closing cluster...");
+            temp.cluster.close();
+
+            LOG.trace("Done");
+        }
     }
 }

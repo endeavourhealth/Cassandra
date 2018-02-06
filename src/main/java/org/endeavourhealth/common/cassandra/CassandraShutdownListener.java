@@ -18,19 +18,8 @@ public final class CassandraShutdownListener implements ServletContextListener {
     }
 
     public void contextDestroyed(ServletContextEvent contextEvent) {
-
-        CassandraConnector.getInstance().close();
-
-        // also shutdown postgres driver
-        Enumeration<Driver> drivers = DriverManager.getDrivers();
-        while (drivers.hasMoreElements()) {
-            Driver driver = drivers.nextElement();
-            try {
-                DriverManager.deregisterDriver(driver);
-                LOG.info(String.format("deregistering jdbc driver: %s", driver));
-            } catch (SQLException e) {
-                LOG.error(String.format("Error deregistering driver %s", driver), e);
-            }
-        }
+        LOG.trace("Shutting down cassandra...");
+        CassandraConnector.close();
+        LOG.trace("Cassandra shutdown done.");
     }
 }
