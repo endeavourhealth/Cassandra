@@ -16,11 +16,17 @@
         <endeavour-cache.version>1.1-SNAPSHOT</endeavour-cache.version>
         <endeavour-config.version>1.20-SNAPSHOT</endeavour-config.version>
 
+        <fhir.version>1.0.1.7108</fhir.version>
         <cassandra-driver.version>3.1.1</cassandra-driver.version>
         <servlet.version>3.1.0</servlet.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>me.fhir</groupId>
+            <artifactId>fhir-dstu2</artifactId>
+            <version>${fhir.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.endeavourhealth.common</groupId>
             <artifactId>cache</artifactId>
